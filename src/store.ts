@@ -1,3 +1,5 @@
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+
 // localStorage helpers. Every key starts with the app slug, because other apps on the
 // same github.io origin share this storage.
 const PREFIX = 'fret-buddy:';
@@ -21,4 +23,11 @@ export function save<T>(key: string, value: T): void {
   } catch {
     // Private mode or full storage: the app still works, settings just won't persist.
   }
+}
+
+/** useState that remembers its value across reloads. */
+export function useStored<T>(key: string, fallback: T): [T, Dispatch<SetStateAction<T>>] {
+  const [value, setValue] = useState<T>(() => load(key, fallback));
+  useEffect(() => save(key, value), [key, value]);
+  return [value, setValue];
 }

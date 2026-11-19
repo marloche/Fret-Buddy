@@ -85,7 +85,7 @@ export function MetronomeProvider({ children }: { children: ReactNode }) {
     setPeakBpm(settingsRef.current.trainer.enabled ? settingsRef.current.trainer.start : settingsRef.current.bpm);
     void engine.start().then(() => {
       setPlaying(true);
-      keepAwake(true);
+      keepAwake('metronome', true);
       if (isIOS() && !load('silentHintSeen', false)) setSilentHint(true);
     });
   }, [engine]);
@@ -93,7 +93,7 @@ export function MetronomeProvider({ children }: { children: ReactNode }) {
     engine.stop();
     setPlaying(false);
     setTick(null);
-    keepAwake(false);
+    keepAwake('metronome', false);
   }, [engine]);
   const toggle = useCallback(() => (engine.playing ? stop() : start()), [engine, start, stop]);
 
