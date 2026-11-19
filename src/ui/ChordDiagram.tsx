@@ -6,7 +6,7 @@ import type { Voicing } from '../theory/voicings';
 const STR_GAP = 24;
 const FRET_GAP = 30;
 const FRETS = 5;
-const LEFT = 30;
+const LEFT = 36; // room for the "12fr" label left of the dots
 const TOP = 30;
 
 export function ChordDiagram({ voicing, chord }: { voicing: Voicing; chord: Built & { symbol: string } }) {
@@ -27,7 +27,7 @@ export function ChordDiagram({ voicing, chord }: { voicing: Voicing; chord: Buil
   return (
     <svg className="chord-diagram" viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${chord.symbol}: ${describe} (low to high)`}>
       {base > 1 && (
-        <text className="cd-base" x={LEFT - 10} y={fy(base)} textAnchor="end" dominantBaseline="central">
+        <text className="cd-base" x={LEFT - 13} y={fy(base)} textAnchor="end" dominantBaseline="central">
           {base}fr
         </text>
       )}

@@ -2,8 +2,8 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 
-const BG = [0x16, 0x18, 0x1d];
-const PICK = [0xf5, 0xa6, 0x23];
+const BG = [0x3a, 0x28, 0x1c]; // walnut
+const PICK = [0xe3, 0xb2, 0x61]; // brass
 
 const crcTable = Array.from({ length: 256 }, (_, n) => {
   let c = n;

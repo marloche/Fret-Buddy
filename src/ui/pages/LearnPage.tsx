@@ -56,6 +56,8 @@ function rich(text: string): ReactNode {
 
 function BlockView({ block: b }: { block: Block }) {
   switch (b.type) {
+    case 'h':
+      return <h3 className="lesson-h">{b.text}</h3>;
     case 'p':
       return <p>{rich(b.text)}</p>;
     case 'tip':

@@ -51,7 +51,12 @@ export function App() {
       <PracticeProvider>
         <div className="app">
           <header className="top">
-            <span className="brand">Fret Buddy</span>
+            <span className="brand">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 22.5c-1.6 0-7.6-8.4-8.6-13.2C2.6 5.3 6.6 2 12 2s9.4 3.3 8.6 7.3c-1 4.8-7 13.2-8.6 13.2z" fill="var(--brass)" />
+              </svg>
+              Fret Buddy
+            </span>
             <nav className="tabs" aria-label="Sections">
               {ROUTES.map((r) => (
                 <a key={r.id} href={`#/${r.id}`} className={r === route ? 'on' : ''} aria-current={r === route ? 'page' : undefined}>

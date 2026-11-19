@@ -4,6 +4,7 @@
 import type { TabNote } from '../theory/tab';
 
 export type Block =
+  | { type: 'h'; text: string }
   | { type: 'p'; text: string }
   | { type: 'list'; items: string[]; ordered?: boolean }
   | { type: 'tip'; text: string }
@@ -104,26 +105,37 @@ export const LESSONS: Lesson[] = [
   {
     id: 'building-chords',
     title: 'How chords are built',
-    summary: 'Stack every other note of the scale: 1, 3, 5.',
+    summary: 'What chord names mean, and why a shape has more notes than the recipe.',
     blocks: [
-      { type: 'p', text: 'A basic chord (a **triad**) is three notes: the root, a 3rd, and a 5th. Take a scale, play note 1, skip one, play 3, skip one, play 5.' },
+      { type: 'h', text: 'The basic recipe' },
+      { type: 'p', text: 'A basic chord (a **triad**) is three notes: the root, a 3rd, and a 5th. Take a scale, play note 1, skip one, play 3, skip one, play 5. In C major that gives C, E, G: a C major chord.' },
+      { type: 'h', text: 'Reading a chord name' },
+      { type: 'p', text: 'The letter is the **root**, the note the chord is built on. Everything after it is the **type**, which tells you which other notes to stack on top. No type at all means major: "C" is C major, "Cm" is C minor.' },
+      { type: 'tip', text: 'The confusing one: a plain **7** (C7) means the ♭7, the bluesy one. Only **maj7** (Cmaj7) uses the 7 one fret below the root. The "maj" refers to the 7th, not to the chord.' },
       {
         type: 'table',
-        head: ['Chord', 'Formula', 'In C'],
+        head: ['Type', 'Recipe', 'In C', 'Sounds like'],
         rows: [
-          ['Major', '1 3 5', 'C E G'],
-          ['Minor', '1 ♭3 5', 'C E♭ G'],
-          ['Diminished', '1 ♭3 ♭5', 'C E♭ G♭'],
-          ['Augmented', '1 3 ♯5', 'C E G♯'],
-          ['Sus2 / Sus4', '1 2 5 / 1 4 5', 'C D G / C F G'],
-          ['Dominant 7', '1 3 5 ♭7', 'C E G B♭'],
-          ['Major 7', '1 3 5 7', 'C E G B'],
-          ['Minor 7', '1 ♭3 5 ♭7', 'C E♭ G B♭'],
+          ['Major', '1 3 5', 'C E G', 'Bright, home'],
+          ['Minor (m)', '1 ♭3 5', 'C E♭ G', 'Darker, sad'],
+          ['Dominant 7 (7)', '1 3 5 ♭7', 'C E G B♭', 'Bluesy, wants to move'],
+          ['Major 7 (maj7)', '1 3 5 7', 'C E G B', 'Soft, dreamy'],
+          ['Minor 7 (m7)', '1 ♭3 5 ♭7', 'C E♭ G B♭', 'Mellow, smooth'],
+          ['Sus2 / Sus4', '1 2 5 / 1 4 5', 'C D G / C F G', 'Open / tense, no 3rd'],
+          ['Diminished (dim)', '1 ♭3 ♭5', 'C E♭ G♭', 'Tense, passing'],
+          ['Augmented (aug)', '1 3 ♯5', 'C E G♯', 'Eerie, rising'],
+          ['Add 9 (add9)', '1 3 5 9', 'C E G D', 'Shimmery'],
         ],
       },
-      { type: 'p', text: 'Guitar chords use six strings for three or four notes, so notes repeat in different octaves. Open E major is E B E G♯ B E: still just 1, 3 and 5.' },
-      { type: 'chord', root: 'E', quality: 'maj', caption: 'E major: look at the note names under the strings.' },
+      { type: 'p', text: 'The **3rd** decides major (3) or minor (♭3). The extra notes (7ths, 9ths) add color on top. Sus chords drop the 3rd, which is why they sound unfinished.' },
+      { type: 'h', text: 'Why a shape shows more notes than the recipe' },
+      { type: 'p', text: 'A guitar has six strings, but most chords have only three or four notes. So shapes **repeat** some notes in a higher octave. Open E major plays E B E G♯ B E: six strings, but still only E, G♯ and B (1, 3 and 5). Doubling just makes the chord fuller.' },
+      { type: 'chord', root: 'E', quality: 'maj', caption: 'E major: read the note names under the strings.' },
       { type: 'chord', root: 'E', quality: 'min', caption: 'E minor: one finger lifts and the 3rd (G♯) drops to ♭3 (G).' },
+      { type: 'p', text: 'It also works the other way: a shape can **leave a note out**. Open C7 plays C E B♭ C E, with no G. The 5th adds the least character, so it\'s the note guitarists drop first when a shape would be too hard to finger.' },
+      { type: 'chord', root: 'C', quality: '7', caption: 'C7: no G (the 5th) anywhere, and it still sounds like C7.' },
+      { type: 'h', text: 'Why there are several shapes' },
+      { type: 'p', text: 'Every note exists in several places on the neck, so every chord does too. The Chords tab shows an open shape near the nut and barre shapes further up. They are the same chord; pick the one closest to where your hand already is.' },
       { type: 'tip', text: 'Compare E and Em, or A and Am, on the Chords tab. Only one note changes, the 3rd, and the mood flips.' },
     ],
   },
