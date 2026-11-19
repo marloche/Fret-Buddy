@@ -125,7 +125,9 @@ h2 {
   display: flex;
   align-items: center;
   gap: var(--gap);
-  padding: 8px 20px;
+  /* viewport-fit=cover lets the page run under the iPhone status bar/notch, so pad by the safe area. */
+  padding: calc(8px + env(safe-area-inset-top)) calc(20px + env(safe-area-inset-right)) 8px
+    calc(20px + env(safe-area-inset-left));
   background: var(--bg);
   border-bottom: 1px solid var(--border);
 }
@@ -160,7 +162,7 @@ main {
   width: 100%;
   max-width: 880px;
   margin: 0 auto;
-  padding: var(--gap) var(--gap) 140px;
+  padding: var(--gap) calc(var(--gap) + env(safe-area-inset-right)) 140px calc(var(--gap) + env(safe-area-inset-left));
 }
 .bottom {
   position: fixed;
@@ -170,7 +172,7 @@ main {
   z-index: 10;
   background: var(--surface);
   border-top: 1px solid var(--border);
-  padding-bottom: env(safe-area-inset-bottom);
+  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 /* Phone: tabs move to the very bottom (thumb reach), the metronome bar sits right above them. */
@@ -184,7 +186,7 @@ main {
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 0 0 env(safe-area-inset-bottom);
+    padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     border-top: 1px solid var(--border);
     border-bottom: 0;
     background: var(--surface);
@@ -218,7 +220,19 @@ main {
     padding-bottom: 0;
   }
   main {
-    padding: 12px 12px calc(200px + env(safe-area-inset-bottom));
+    padding: calc(12px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right))
+      calc(200px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left));
+  }
+  /* Solid strip behind the status bar, so scrolled content doesn't run under the clock. */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top);
+    background: var(--bg);
+    z-index: 20;
   }
 }
 
