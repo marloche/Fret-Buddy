@@ -1,19 +1,27 @@
 // Full metronome controls. The engine itself lives in MetronomeContext.
 import { useState } from 'react';
-import { BPM_MAX, BPM_MIN, SUBDIVISIONS, TIME_SIGS } from '../../logic/tempo';
+import { BPM_MAX, BPM_MIN, SUBDIVISIONS, TIME_SIGS, type CountIn, type Gap } from '../../logic/tempo';
 import type { Trainer } from '../../logic/trainer';
-import { BeatDots } from '../BeatDots';
+import { BeatDots, PhaseLine } from '../BeatDots';
+
+const COUNT_INS: { value: CountIn; label: string }[] = [
+  { value: 0, label: 'Off' },
+  { value: 1, label: '1 bar' },
+  { value: 2, label: '2 bars' },
+];
 import { useMetronome } from '../MetronomeContext';
 
 export function MetronomePage() {
   const m = useMetronome();
   const s = m.settings;
   const setTrainer = (patch: Partial<Trainer>) => m.update({ trainer: { ...s.trainer, ...patch } });
+  const setGap = (patch: Partial<Gap>) => m.update({ gap: { ...s.gap, ...patch } });
 
   return (
     <div className="page metronome-page">
       <section className="card center">
         <BeatDots large />
+        <PhaseLine />
         <div className="big-bpm">
           <BpmInput value={s.bpm} onCommit={m.setBpm} />
           <span>BPM</span>
@@ -74,6 +82,16 @@ export function MetronomePage() {
             ))}
           </div>
         </div>
+        <div className="field">
+          <span className="label">Count-in</span>
+          <div className="seg">
+            {COUNT_INS.map((c) => (
+              <button key={c.value} className={s.countIn === c.value ? 'on' : ''} onClick={() => m.update({ countIn: c.value })}>
+                {c.label}
+              </button>
+            ))}
+          </div>
+        </div>
         <label className="field row">
           <input type="checkbox" checked={s.accent} onChange={(e) => m.update({ accent: e.target.checked })} />
           <span>Accent beat 1</span>
@@ -109,6 +127,23 @@ export function MetronomePage() {
           {s.trainer.target}. Press start to begin from the start BPM.
         </p>
         {m.playing && s.trainer.enabled && <p className="small">Reached: {m.peakBpm} BPM</p>}
+      </section>
+
+      <section className="card">
+        <h2>Timing test</h2>
+        <label className="field row">
+          <input type="checkbox" checked={s.gap.enabled} onChange={(e) => setGap({ enabled: e.target.checked })} />
+          <span>Go silent every few bars</span>
+        </label>
+        <div className={`trainer-grid${s.gap.enabled ? '' : ' disabled'}`}>
+          <NumField label="Bars with click" value={s.gap.playBars} min={1} max={16} onChange={(v) => setGap({ playBars: v })} />
+          <NumField label="Silent bars" value={s.gap.muteBars} min={1} max={16} onChange={(v) => setGap({ muteBars: v })} />
+        </div>
+        <p className="muted small">
+          The click plays {s.gap.playBars} {s.gap.playBars === 1 ? 'bar' : 'bars'}, then drops out for {s.gap.muteBars}{' '}
+          {s.gap.muteBars === 1 ? 'bar' : 'bars'} and the lights go dark. Keep playing and counting. If you're still on the beat
+          when it comes back, your inner time is solid. Works with the speed trainer.
+        </p>
       </section>
     </div>
   );

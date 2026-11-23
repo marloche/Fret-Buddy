@@ -1,9 +1,12 @@
 // A soft two-note chime for "time's up on this item". Separate from the metronome so
 // it works whether or not the click is running.
+import { preferPlayback } from './session';
+
 let ctx: AudioContext | null = null;
 
 /** Call from a click/tap so iOS allows audio later. */
 export function primeChime(): void {
+  preferPlayback();
   ctx ??= new AudioContext();
   if (ctx.state !== 'running') void ctx.resume();
 }

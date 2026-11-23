@@ -11,7 +11,7 @@ export interface Trainer {
 
 export const DEFAULT_TRAINER: Trainer = { enabled: false, start: 60, target: 100, step: 5, barsPerStep: 4 };
 
-/** BPM for a bar (0-based bar count since play started). Works upward or downward, never passes target. */
+/** BPM for a bar (0 = first bar after any count-in; count-in bars are negative and use the start BPM). Works upward or downward, never passes target. */
 export function trainerBpm(t: Trainer, bar: number): number {
   const start = clampBpm(t.start);
   const target = clampBpm(t.target);

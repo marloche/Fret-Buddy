@@ -5,7 +5,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { Metronome, type MetronomeSettings, type Tick } from '../audio/scheduler';
 import { keepAwake } from '../audio/wakeLock';
 import { addTap, bpmFromTaps } from '../logic/tap';
-import { clampBpm } from '../logic/tempo';
+import { clampBpm, DEFAULT_GAP } from '../logic/tempo';
 import { DEFAULT_TRAINER } from '../logic/trainer';
 import { load, save } from '../store';
 
@@ -16,6 +16,8 @@ const DEFAULTS: MetronomeSettings = {
   accent: true,
   volume: 0.8,
   trainer: DEFAULT_TRAINER,
+  countIn: 0,
+  gap: DEFAULT_GAP,
 };
 
 interface MetronomeApi {
@@ -43,7 +45,7 @@ const isIOS = () =>
 export function MetronomeProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<MetronomeSettings>(() => {
     const s = load('metronome', DEFAULTS);
-    return { ...s, trainer: { ...DEFAULT_TRAINER, ...s.trainer } };
+    return { ...s, trainer: { ...DEFAULT_TRAINER, ...s.trainer }, gap: { ...DEFAULT_GAP, ...s.gap } };
   });
   const [playing, setPlaying] = useState(false);
   const [tick, setTick] = useState<Tick | null>(null);

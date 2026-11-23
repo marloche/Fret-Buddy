@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   accentFor,
+  barPhase,
   clampBpm,
   nextPosition,
   secondsPerBeat,
@@ -99,5 +100,36 @@ describe('speed trainer', () => {
   it('can step down', () => {
     expect(trainerBpm({ ...t, start: 100, target: 90 }, 4)).toBe(95);
     expect(trainerBpm({ ...t, start: 100, target: 90 }, 40)).toBe(90);
+  });
+});
+
+describe('count-in and gap click', () => {
+  const off = { enabled: false, playBars: 2, muteBars: 2 };
+  const gap = { enabled: true, playBars: 2, muteBars: 1 };
+
+  it('treats negative bars as count-in, whatever the gap setting', () => {
+    expect(barPhase(-2, off)).toBe('count');
+    expect(barPhase(-1, gap)).toBe('count');
+  });
+
+  it('always plays when the gap click is off', () => {
+    for (let bar = 0; bar < 10; bar++) expect(barPhase(bar, off)).toBe('play');
+  });
+
+  it('cycles play, play, mute starting at the first real bar', () => {
+    expect([0, 1, 2, 3, 4, 5].map((b) => barPhase(b, gap))).toEqual(['play', 'play', 'mute', 'play', 'play', 'mute']);
+  });
+
+  it('never lets a zero or junk length stop the cycle', () => {
+    const odd = { enabled: true, playBars: 0, muteBars: 0.2 };
+    expect([0, 1, 2, 3].map((b) => barPhase(b, odd))).toEqual(['play', 'mute', 'play', 'mute']);
+  });
+
+  it('keeps the speed trainer at its start tempo during the count-in', () => {
+    const t: Trainer = { enabled: true, start: 60, target: 100, step: 5, barsPerStep: 1 };
+    expect(trainerBpm(t, -2)).toBe(60);
+    expect(trainerBpm(t, -1)).toBe(60);
+    expect(trainerBpm(t, 0)).toBe(60);
+    expect(trainerBpm(t, 1)).toBe(65);
   });
 });

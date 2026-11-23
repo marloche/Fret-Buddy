@@ -1105,3 +1105,127 @@ button:disabled {
     animation: none;
   }
 }
+
+/* ---------- Count-in and gap click ---------- */
+.phase-line {
+  margin: 2px 0 0;
+  min-height: 1.5em;
+  color: var(--brass);
+  font-weight: 700;
+}
+.bpm-readout {
+  min-width: 3.6rem; /* fits COUNT / SILENT so the bar doesn't shift */
+}
+.bpm-label.phase {
+  opacity: 1;
+  color: #f0c060;
+}
+.beat-dots.silent .dot {
+  opacity: 0.45;
+}
+
+/* ---------- Personal bests ---------- */
+.best {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+.best-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.best-head strong {
+  font: 800 1.2rem var(--font-head);
+}
+.best-head .link {
+  min-height: 36px;
+}
+.meter {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.meter span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--brass);
+  transition: width 0.3s;
+}
+.clean-btn {
+  border-color: var(--ok);
+  color: var(--ok);
+  font-weight: 700;
+}
+.best-note {
+  margin: 0;
+  color: var(--ok);
+  font-weight: 700;
+}
+
+/* ---------- Chord changes ---------- */
+.pick-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 12px;
+}
+@media (max-width: 520px) {
+  .pick-pair {
+    grid-template-columns: 1fr;
+  }
+}
+.pick-row {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 6px;
+}
+.changes-diagrams {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.changes-symbol {
+  font: 800 1.2rem var(--font-head);
+  color: var(--text);
+}
+.changes-run {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin: 8px 0;
+}
+.changes-run p {
+  margin: 0;
+}
+.changes-run .load-btn {
+  max-width: 360px;
+}
+.changes-entry {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+}
+.changes-entry input {
+  width: 6ch;
+  max-width: 110px;
+  text-align: center;
+  font: 800 1.4rem var(--font-head);
+}
+.changes-entry .step-row button {
+  flex: 0 1 auto;
+}
+/* Narrow phones: 4/4 dots fit on one line next to a 3-digit BPM (~51px available). */
+@media (max-width: 400px) {
+  .metro-bar .beat-dots {
+    gap: 3px;
+  }
+  .metro-bar .beat-dots .dot {
+    width: 10px;
+    height: 10px;
+  }
+}

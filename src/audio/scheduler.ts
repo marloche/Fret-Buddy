@@ -7,14 +7,19 @@
 // The timer only keeps the buffer full; the audio clock does the timing, so clicks don't drift.
 import {
   accentFor,
+  barPhase,
   nextPosition,
   tickInterval,
   timeSigById,
   type Accent,
+  type BarPhase,
+  type CountIn,
+  type Gap,
   type Subdivision,
 } from '../logic/tempo';
 import { trainerBpm, type Trainer } from '../logic/trainer';
 import { playClick } from './click';
+import { preferPlayback } from './session';
 
 export interface MetronomeSettings {
   bpm: number;
@@ -23,6 +28,8 @@ export interface MetronomeSettings {
   accent: boolean;
   volume: number; // 0..1
   trainer: Trainer;
+  countIn: CountIn;
+  gap: Gap;
 }
 
 export interface Tick {
@@ -31,6 +38,8 @@ export interface Tick {
   sub: number;
   bar: number;
   accent: Accent;
+  /** count-in, normal, or a silent gap-click bar (still ticks, for timing and display). */
+  phase: BarPhase;
 }
 
 const TIMER_MS = 25;
@@ -61,12 +70,13 @@ export class Metronome {
   async start(): Promise<void> {
     if (this.playing) return;
     // The AudioContext must be created/resumed inside a user gesture (iOS especially).
+    preferPlayback();
     this.ctx ??= new AudioContext({ latencyHint: 'interactive' });
     if (this.ctx.state !== 'running') await this.ctx.resume();
     this.playing = true;
     this.beat = 0;
     this.sub = 0;
-    this.bar = 0;
+    this.bar = 0 - this.getSettings().countIn; // count-in bars are negative (see barPhase); 0 - 0 avoids -0
     this.queue = [];
     this.lastSig = this.getSettings().timeSig;
     this.applyTrainer();
@@ -111,8 +121,9 @@ export class Metronome {
       }
       if (this.sub >= s.subdivision) this.sub = 0; // subdivision got smaller mid-beat
       const accent = accentFor(sig, this.beat, this.sub, s.accent);
-      playClick(ctx, this.nextTime, accent, s.volume);
-      this.queue.push({ time: this.nextTime, beat: this.beat, sub: this.sub, bar: this.bar, accent });
+      const phase = barPhase(this.bar, s.gap);
+      if (phase !== 'mute') playClick(ctx, this.nextTime, accent, s.volume);
+      this.queue.push({ time: this.nextTime, beat: this.beat, sub: this.sub, bar: this.bar, accent, phase });
 
       this.nextTime += tickInterval(s.bpm, s.subdivision);
       const next = nextPosition(this.beat, this.sub, sig.beats, s.subdivision);

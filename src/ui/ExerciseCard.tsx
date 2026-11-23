@@ -1,5 +1,6 @@
 import { CATEGORY_LABELS, type Exercise } from '../data/exercises';
 import { SUBDIVISIONS } from '../logic/tempo';
+import { BestRow } from './BestRow';
 import { LoadBpmButton } from './LoadBpmButton';
 import { TabView } from './TabView';
 
@@ -32,6 +33,7 @@ export function ExerciseCard({ exercise: e }: { exercise: Exercise }) {
           <li key={t}>{t}</li>
         ))}
       </ul>
+      {e.tab && <BestRow exercise={e} />}
       {e.tab && <LoadBpmButton exercise={e} />}
     </article>
   );

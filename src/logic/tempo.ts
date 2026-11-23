@@ -77,3 +77,30 @@ export function nextPosition(
   if (b >= beats) return { beat: 0, sub: 0, newBar: true };
   return { beat: b, sub: s, newBar: false };
 }
+
+/** Gap click: the click plays for `playBars`, then goes silent for `muteBars`, to test your inner time. */
+export interface Gap {
+  enabled: boolean;
+  playBars: number;
+  muteBars: number;
+}
+
+export const DEFAULT_GAP: Gap = { enabled: false, playBars: 2, muteBars: 2 };
+
+/** Bars of clicks before the real start (0 = straight in). */
+export type CountIn = 0 | 1 | 2;
+
+/** count = count-in bar, play = normal, mute = gap-click silence. */
+export type BarPhase = 'count' | 'play' | 'mute';
+
+/**
+ * What a bar does. Bars are numbered from the first real bar: the count-in uses negative
+ * numbers (-2, -1), so the gap pattern and the speed trainer both start at bar 0.
+ */
+export function barPhase(bar: number, gap: Gap): BarPhase {
+  if (bar < 0) return 'count';
+  if (!gap.enabled) return 'play';
+  const play = Math.max(1, Math.round(gap.playBars));
+  const mute = Math.max(1, Math.round(gap.muteBars));
+  return bar % (play + mute) < play ? 'play' : 'mute';
+}

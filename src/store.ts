@@ -1,4 +1,4 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useState, useSyncExternalStore, type Dispatch, type SetStateAction } from 'react';
 
 // localStorage helpers. Every key starts with the app slug, because other apps on the
 // same github.io origin share this storage.
@@ -30,4 +30,23 @@ export function useStored<T>(key: string, fallback: T): [T, Dispatch<SetStateAct
   const [value, setValue] = useState<T>(() => load(key, fallback));
   useEffect(() => save(key, value), [key, value]);
   return [value, setValue];
+}
+
+/**
+ * Like useStored, but one value shared by every component that uses the returned hook,
+ * so two cards on screen can't overwrite each other's changes.
+ */
+export function sharedStored<T>(key: string, fallback: T): () => [T, (update: (prev: T) => T) => void] {
+  let value = load(key, fallback);
+  const listeners = new Set<() => void>();
+  const subscribe = (fn: () => void) => {
+    listeners.add(fn);
+    return () => listeners.delete(fn);
+  };
+  const set = (update: (prev: T) => T) => {
+    value = update(value);
+    save(key, value);
+    listeners.forEach((fn) => fn());
+  };
+  return () => [useSyncExternalStore(subscribe, () => value), set];
 }

@@ -1,5 +1,5 @@
 // The always-visible metronome strip: beat dots, BPM with +/-, play, tap.
-import { BeatDots } from './BeatDots';
+import { BeatDots, BpmLabel } from './BeatDots';
 import { useMetronome } from './MetronomeContext';
 import { useRepeatPress } from './useRepeatPress';
 
@@ -11,7 +11,7 @@ export function MetronomeBar() {
     <div className="metro-bar" role="region" aria-label="Metronome">
       {m.silentHint && (
         <div className="hint" role="status">
-          No sound? Turn off the iPhone's silent switch, then turn up the volume.
+          No sound? Turn up the volume. On older iPhones, also turn off the silent switch.
           <button className="link" onClick={m.dismissSilentHint}>
             Got it
           </button>
@@ -25,7 +25,7 @@ export function MetronomeBar() {
           </button>
           <div className="bpm-readout" aria-live="off">
             <span className="bpm-num">{m.settings.bpm}</span>
-            <span className="bpm-label">{m.settings.trainer.enabled ? 'BPM ↗' : 'BPM'}</span>
+            <BpmLabel fallback={m.settings.trainer.enabled ? 'BPM ↗' : 'BPM'} />
           </div>
           <button className="icon-btn" aria-label="Faster (hold for +5)" {...plus}>
             +
